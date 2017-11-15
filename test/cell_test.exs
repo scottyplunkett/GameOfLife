@@ -1,32 +1,31 @@
 defmodule GameOfLife.CellTest do
   use ExUnit.Case, async: true
 
-  test "A Cell can stay or come alive" do
+  setup _context do 
     location = {1,1}
-    dead_cell = %{location => :dead}
-    living_cell = %{location => :alive}
-    assert GameOfLife.Cell.live(dead_cell,location) == %{{1,1} => :alive}
-    assert GameOfLife.Cell.live(living_cell,location) == %{{1,1} => :alive}
+    {:ok, [
+            location: location,
+            dead:   %{location => :dead},
+            living: %{location => :alive}
+          ]
+    }
+  end 
+
+  test "A Cell can stay or come alive", context do 
+    assert GameOfLife.Cell.live(context[:dead],context[:location]) == %{{1,1} => :alive}
+    assert GameOfLife.Cell.live(context[:living],context[:location]) == %{{1,1} => :alive}
+  end 
+
+  test "A Cell can stay or be dead", context do 
+    assert GameOfLife.Cell.die(context[:dead],context[:location]) == %{{1,1} => :dead}
+    assert GameOfLife.Cell.die(context[:living],context[:location]) == %{{1,1} => :dead}
   end
 
-  test "A Cell can stay or be dead" do
-    location = {1,1}
-    dead_cell = %{location => :dead}
-    living_cell = %{location => :alive}
-    assert GameOfLife.Cell.die(dead_cell,location) == %{{1,1} => :dead}
-    assert GameOfLife.Cell.die(living_cell,location) == %{{1,1} => :dead}
+  test "A living Cell responds true to is_alive?", context do 
+    assert GameOfLife.Cell.is_alive?(context[:living],context[:location]) == true
   end
 
-  test "A living Cell responds true to is_alive?" do
-    location = {1,1}
-    living_cell = %{location => :alive}
-    assert GameOfLife.Cell.is_alive?(living_cell,location) == true
+  test "A dead Cell responds false to is_alive?", context do 
+    assert GameOfLife.Cell.is_alive?(context[:dead],context[:location]) == false
   end
-
-  test "A dead Cell responds false to is_alive?" do
-    location = {1,1}
-    dead_cell = %{location => :dead}
-    assert GameOfLife.Cell.is_alive?(dead_cell,location) == false
-  end
-
 end
