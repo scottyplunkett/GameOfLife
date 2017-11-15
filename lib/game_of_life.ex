@@ -1,3 +1,2 @@
 defmodule GameOfLife do
-
 end
