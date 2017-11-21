@@ -11,7 +11,7 @@ defmodule GameOfLife.NeighborhoodTest do
     }
   end
 
-  test "A neighborhood can gather the nieghbors of a the_list of cells", the_list do 
+  test "A neighborhood can gather all locations adjacent to all cells in a list", the_list do 
     assert GameOfLife.Neighborhood.get_all_neighbors_of(the_list[:of_two_living_cells]) == the_list[:of_neighbors_of_two_living_cells] 
   end
 
