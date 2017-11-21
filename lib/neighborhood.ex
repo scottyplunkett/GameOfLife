@@ -25,7 +25,9 @@ defmodule GameOfLife.Neighborhood do
   count_live_neighbors_of(cells):
     Behavior: Uses tail recursion & pattern matching to count occurences 
     of LIVE neighbors from a given list of Cells... 
-    Motivation: This function enables the conditionals neccessary for generational rules... By having a count of the live neighbors for each specific cell, we can filter out cells that meet the criteria for under/overpopulation
+    Motivation: This function enables the conditionals neccessary for generational rules... 
+    By having a count of the live neighbors for each specific cell, 
+    we can filter out cells that meet the criteria for under/overpopulation
     Steps-
     1. Pipe a given list of cells into the recursive function 
        w/ all neighbors as the 2nd argument, 
