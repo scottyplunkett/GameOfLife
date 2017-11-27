@@ -1,82 +1,50 @@
 defmodule GameOfLife do
-  def lives?(status,living_neighbor_count) do 
+  def lives?(status,count) do 
     if status == :alive do 
-      living_neighbor_count >= 2 && living_neighbor_count <= 3
+      count >= 2 && count <= 3
     else 
-      living_neighbor_count === 3 
-    end
-  end 
-
-  def northeast({col,row}) do 
-    if row === 1 do 
-      if col === 1, do: {-2,-2}, else: {1,-2}
-    else 
-      if col === 1, do: {-2,1}, else: {1,1}
+      count === 3 
     end
   end
 
-  def southeast({col,row}) do 
-    if row === -1 do 
-      if col === 1, do: {-2,2}, else: {1,2}
-    else 
-      if col === 1, do: {-2,-1}, else: {1,-1}
-    end
-  end
-  
-  def northwest({col,row}) do 
-    if row === 1 do 
-      if col === -1, do: {2,-2}, else: {-1,-2}
-    else 
-      if col === -1, do: {2, 1}, else: {-1,1}
-    end
-  end
-  
-  def southwest({col,row}) do 
-    if row === -1 do 
-      if col === -1, do: {2,2}, else: {-1,2}
-    else 
-      if col === -1, do: {2,-1}, else: {-1,-1}
-    end
+  def neighbors({col,row}) do 
+    for dx <- [-1, 0, 1], dy <- [-1, 0, 1], {dx,dy} != {0,0}, do: 
+      {col + dx, row + dy}
   end
 
-  def living_neighbors(world,{col,row}) do
-    n  = if row   ==  1,  do: {0,-2}, else: {0,1} 
-    s  = if row   == -1,  do: {0,2},  else: {0,-1}
-    w  = if col == -1,  do: {2,0},  else: {-1,0}
-    e  = if col ==  1,  do: {-2,0}, else: {1,0}
-    ne = {col,row} |> northeast
-    se = {col,row} |> southeast
-    nw = {col,row} |> northwest
-    sw = {col,row} |> southwest
-    directions = [
-                  nw,n,ne,
-                   w,   e,
-                  sw,s,se
-                 ]
-    neighbors = for {distance_h, distance_v} <- directions, do: 
-      world[{col+distance_h,row+distance_v}]
-    Enum.count(neighbors, fn(status) -> status == :alive end)
+  def living_neighbors(world,location) do
+    Enum.count((for position <- neighbors(location), do: 
+      world[position]), fn(status) -> status == :alive end)
+  end
+
+  def new_world(old_world) do 
+    List.flatten(for {{x,y},_} <- old_world, do: neighbors({x,y}) 
+    |> List.flatten  
+    |> Enum.uniq)
+    |> Enum.into(%{},fn(pos) -> 
+      {pos,(if lives?(old_world[pos],living_neighbors(old_world,pos)) do
+              :alive
+            else 
+              :dead
+            end)}
+          end) 
   end
 
   def tick(world,generations) do
     :timer.sleep 100
-    if generations == 0 do 
-      IO.inspect world 
-    else
-      IO.puts "\n"
-      IO.puts "==============================="
-      IO.puts "#{world[{-1,1}]}---#{world[{0,1}]}---#{world[{1,1}]}"
-      IO.puts "#{world[{-1,0}]}---#{world[{0,0}]}---#{world[{1,0}]}"
-      IO.puts "#{world[{-1,-1}]}---#{world[{0,-1}]}---#{world[{1,-1}]}"
-      IO.puts "==============================="
-      tick(Enum.into(world, %{},
-        fn({pos,_}) -> 
-          {pos,(if lives?(world[pos],living_neighbors(world,pos)) do
-                :alive
-              else 
-                :dead
-              end)} 
-        end),generations-1)
+    world |> print
+    IO.puts "\n"      
+    unless generations == 0 do 
+      tick(new_world(world),generations-1)
     end
   end 
+
+  def grid(world) do 
+    Enum.reverse(Enum.chunk_every((for {{_x,_y},status} <- Enum.sort(Map.to_list(world)), do: if status === :alive, do: " \u2619 ", else: " \u2620 "), trunc(:math.sqrt(map_size(world)))))
+  end
+
+  def print(world) do 
+    IO.puts "\e[H\e[J"
+    for row <- world |> grid, do: row |> IO.puts 
+  end
 end
