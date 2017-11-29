@@ -12,7 +12,7 @@ cd GameOfLife
 
 ### 3
 compile app
-```bash
+```bash v     
 mix compile 
 ```
 
