@@ -34,10 +34,13 @@ defmodule GameOfLifeTest do
   defmodule LivingNeighborsTest do
     use ExUnit.Case
     test "counts living neighbor to the North" do 
-      world = %{{-1,1}  => :dead, {0,1}  => :alive, {1,1}  => :dead,
-                {-1,0}  => :dead, {0,0}  => :dead,  {1,0}  => :dead, 
+      world = %{{-1,1}  => :dead, {0,1}  => :alive, {1,1}  => :alive,
+                {-1,0}  => :dead, {0,0}  => :dead,  {1,0}  => :alive, 
                 {-1,-1} => :dead, {0,-1} => :dead,  {1,-1} => :dead}
-      assert world |> GameOfLife.living_neighbors({0,0}) == 1
+
+
+
+      assert world |> GameOfLife.living_neighbors({0,0}) == 3
     end
     test "counts living neighbor to the South" do 
       world = %{{-1,1}  => :dead, {0,1}  => :dead,  {1,1}  => :dead,

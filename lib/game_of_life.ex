@@ -11,12 +11,14 @@ defmodule GameOfLife do
   def lives?(_,count)  do count === 3 end
 
   def living_neighbors(world,location) do
-    Enum.count((for position <- neighbors(location), do: 
-      world[position]), fn(status) -> status == :alive end)
+    Enum.count((for position <- neighbors(location), do: world[position]), 
+                    fn(status) -> status == :alive end) 
   end
 
+  def clear_screen do IO.puts "\e[2J" end 
+
   def print(world) do 
-    IO.puts "\e[H\e[J"
+    clear_screen()
     for row <- grid(world), do: (for cell <- row, do: iconify(cell)) 
     |> IO.puts 
   end
@@ -36,8 +38,8 @@ defmodule GameOfLife do
   end
 
   def tick(world,generations) do
-    :timer.sleep 100
+    :timer.sleep 200
     print(world)
-    unless generations == 0, do: tick(next(world),generations-1) 
+    unless generations == 0, do: tick(next(world),generations-1)
   end 
 end

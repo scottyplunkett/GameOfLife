@@ -6,15 +6,7 @@ Conway's Game of Life in Elixir Implementation using TDD
 ## Instructions
 To run:
 
-### 1
-clone repo to local machine
-```bash
-git clone https://github.com/scottyplunkett/GameOfLife.git
-```
 
-### 2
-change directory into local repo copy
-```bash
 cd GameOfLife
 ```
 
@@ -34,10 +26,10 @@ iex -S mix
 have fun 
 ```elixir
 almost_human = %{{-1,1}  => :alive, {0,1}  => :dead, {1,1}  => :alive,
-                {-1,0}  => :dead, {0,0}  => :alive, {1,0}  => :alive, 
-                {-1,-1} => :dead, {0,-1} => :dead, {1,-1} => :alive}
+                {-1,0}  => :alive, {0,0}  => :dead, {1,0}  => :alive, 
+                {-1,-1} => :alive, {0,-1} => :alive, {1,-1} => :alive}
 
-GameOfLife.tick(almost_human,25)
+GameOfLife.tick(almost_human,25)j 
 ```
 
 ## Running Test
